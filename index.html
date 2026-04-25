@@ -1,23 +1,171 @@
 <!DOCTYPE html>
-<html>
+<html lang="it">
 <head>
+  <meta charset="UTF-8">
   <title>Pazienti Uniti</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      padding: 30px;
+      background: #f7f9fb;
+      color: #111;
+    }
+
+    h1 {
+      font-size: 38px;
+      margin-bottom: 10px;
+    }
+
+    h2 {
+      font-size: 22px;
+      color: #159957;
+    }
+
+    .box {
+      background: white;
+      padding: 22px;
+      margin: 25px auto;
+      max-width: 540px;
+      border-radius: 18px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+    }
+
+    input, textarea {
+      width: 90%;
+      padding: 12px;
+      margin: 8px 0;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      font-size: 16px;
+    }
+
+    textarea {
+      min-height: 110px;
+    }
+
+    button {
+      padding: 12px 18px;
+      margin-top: 10px;
+      border-radius: 8px;
+      border: none;
+      background: #159957;
+      color: white;
+      font-size: 16px;
+      font-weight: bold;
+    }
+
+    .secondary {
+      background: #0b5ed7;
+    }
+
+    .orange {
+      background: #e67e22;
+    }
+  </style>
 </head>
-<body style="font-family: Arial; text-align:center; padding:40px;">
 
-<h1>PAZIENTI UNITI</h1>
-<h2>Nasciamo insieme. Cresciamo per difendere i pazienti.</h2>
+<body>
 
-<p>Associazione in fase di costruzione</p>
+  <h1>PAZIENTI UNITI</h1>
+  <h2>Nasciamo insieme. Cresciamo per difendere i pazienti.</h2>
 
-<h3>Contatti</h3>
-<p>Telefono: 389/9728973</p>
+  <p>Associazione in fase di costruzione</p>
 
-<h3>Azioni</h3>
-<button>Aderisci</button>
-<button>Invia segnalazione</button>
-<button>Contattaci</button>
+  <div class="box">
+    <h3>Contatti iniziali</h3>
+    <p><strong>Telefono:</strong> 389/9728973</p>
+  </div>
+
+  <div class="box">
+    <h3>Aderisci</h3>
+    <input id="adesione_nome" placeholder="Nome e cognome">
+    <input id="adesione_telefono" placeholder="Telefono">
+    <input id="adesione_citta" placeholder="Comune">
+    <textarea id="adesione_motivazione" placeholder="Perché vuoi aderire?"></textarea>
+    <br>
+    <button onclick="inviaAdesione()">Invia adesione</button>
+  </div>
+
+  <div class="box">
+    <h3>Invia segnalazione</h3>
+    <input id="segnalazione_nome" placeholder="Nome e cognome">
+    <input id="segnalazione_telefono" placeholder="Telefono">
+    <input id="segnalazione_struttura" placeholder="Struttura sanitaria">
+    <textarea id="segnalazione_descrizione" placeholder="Descrivi la segnalazione"></textarea>
+    <br>
+    <button class="secondary" onclick="inviaSegnalazione()">Invia segnalazione</button>
+  </div>
+
+  <div class="box">
+    <h3>Contattaci</h3>
+    <input id="messaggio_nome" placeholder="Nome e cognome">
+    <input id="messaggio_telefono" placeholder="Telefono">
+    <textarea id="messaggio_testo" placeholder="Scrivi il tuo messaggio"></textarea>
+    <br>
+    <button class="orange" onclick="inviaMessaggio()">Invia messaggio</button>
+  </div>
+
+  <script>
+    const supabaseClient = window.supabase.createClient(
+      "https://zotvssrajgieftxobezm.supabase.co",
+      "sb_publishable_OtDmvCSsdDFuZPhtOvpEFA_4QYdiqgv"
+    );
+
+    async function inviaAdesione() {
+      const full_name = document.getElementById("adesione_nome").value;
+      const phone = document.getElementById("adesione_telefono").value;
+      const city = document.getElementById("adesione_citta").value;
+      const motivation = document.getElementById("adesione_motivazione").value;
+
+      const { error } = await supabaseClient
+        .from("membership_requests")
+        .insert([{ full_name, phone, city, motivation }]);
+
+      if (error) {
+        alert("Errore invio adesione: " + error.message);
+      } else {
+        alert("Adesione inviata correttamente.");
+      }
+    }
+
+    async function inviaSegnalazione() {
+      const full_name = document.getElementById("segnalazione_nome").value;
+      const phone = document.getElementById("segnalazione_telefono").value;
+      const facility = document.getElementById("segnalazione_struttura").value;
+      const description = document.getElementById("segnalazione_descrizione").value;
+
+      const { error } = await supabaseClient
+        .from("reports")
+        .insert([{ full_name, phone, facility, description }]);
+
+      if (error) {
+        alert("Errore invio segnalazione: " + error.message);
+      } else {
+        alert("Segnalazione inviata correttamente.");
+      }
+    }
+
+    async function inviaMessaggio() {
+      const full_name = document.getElementById("messaggio_nome").value;
+      const phone = document.getElementById("messaggio_telefono").value;
+      const message = document.getElementById("messaggio_testo").value;
+
+      const { error } = await supabaseClient
+        .from("portal_messages")
+        .insert([{ full_name, phone, message }]);
+
+      if (error) {
+        alert("Errore invio messaggio: " + error.message);
+      } else {
+        alert("Messaggio inviato correttamente.");
+      }
+    }
+  </script>
 
 </body>
 </html>
