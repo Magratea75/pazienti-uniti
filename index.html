@@ -48,9 +48,16 @@
       min-height: 110px;
     }
 
+    label {
+      display: block;
+      margin-top: 12px;
+      font-size: 14px;
+      line-height: 1.4;
+    }
+
     button {
       padding: 12px 18px;
-      margin-top: 10px;
+      margin-top: 12px;
       border-radius: 8px;
       border: none;
       background: #159957;
@@ -87,28 +94,124 @@
     <input id="adesione_telefono" placeholder="Telefono">
     <input id="adesione_citta" placeholder="Comune">
     <textarea id="adesione_motivazione" placeholder="Perché vuoi aderire?"></textarea>
-    <br>
+
+    <label>
+      <input type="checkbox" id="privacy_adesione">
+      Dichiaro di aver letto la <a href="privacy.html" target="_blank">Privacy Policy</a>
+      e autorizzo il trattamento dei dati personali.
+    </label>
+
     <button onclick="inviaAdesione()">Invia adesione</button>
   </div>
 
-<!DOCTYPE html>
-<html lang="it">
-<head>
-  <meta charset="UTF-8">
-  <title>Pazienti Uniti</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <div class="box">
+    <h3>Invia segnalazione</h3>
+    <input id="segnalazione_nome" placeholder="Nome e cognome">
+    <input id="segnalazione_telefono" placeholder="Telefono">
+    <input id="segnalazione_struttura" placeholder="Struttura sanitaria">
+    <textarea id="segnalazione_descrizione" placeholder="Descrivi la segnalazione"></textarea>
 
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <label>
+      <input type="checkbox" id="privacy_segnalazione">
+      Dichiaro di aver letto la <a href="privacy.html" target="_blank">Privacy Policy</a>
+      e autorizzo il trattamento dei dati personali.
+    </label>
 
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      text-align: center;
-      padding: 30px;
-      background: #f7f9fb;
-      color: #111;
+    <button class="secondary" onclick="inviaSegnalazione()">Invia segnalazione</button>
+  </div>
+
+  <div class="box">
+    <h3>Contattaci</h3>
+    <input id="messaggio_nome" placeholder="Nome e cognome">
+    <input id="messaggio_telefono" placeholder="Telefono">
+    <textarea id="messaggio_testo" placeholder="Scrivi il tuo messaggio"></textarea>
+
+    <label>
+      <input type="checkbox" id="privacy_messaggio">
+      Dichiaro di aver letto la <a href="privacy.html" target="_blank">Privacy Policy</a>
+      e autorizzo il trattamento dei dati personali.
+    </label>
+
+    <button class="orange" onclick="inviaMessaggio()">Invia messaggio</button>
+  </div>
+
+  <script>
+    const supabaseClient = window.supabase.createClient(
+      "https://zotvssrajgieftxobezm.supabase.co",
+      "sb_publishable_OtDmvCSsdDFuZPhtOvpEFA_4QYdiqgv"
+    );
+
+    async function inviaAdesione() {
+      const privacy = document.getElementById("privacy_adesione").checked;
+
+      if (!privacy) {
+        alert("Devi leggere e accettare la Privacy Policy prima di inviare.");
+        return;
+      }
+
+      const full_name = document.getElementById("adesione_nome").value;
+      const phone = document.getElementById("adesione_telefono").value;
+      const city = document.getElementById("adesione_citta").value;
+      const motivation = document.getElementById("adesione_motivazione").value;
+
+      const { error } = await supabaseClient
+        .from("membership_requests")
+        .insert([{ full_name, phone, city, motivation, privacy_accepted: true }]);
+
+      if (error) {
+        alert("Errore invio adesione: " + error.message);
+      } else {
+        alert("Adesione inviata correttamente.");
+      }
     }
 
-    h1 {
-      font-size: 38px;
-      margin-bottom: 10px;
+    async function inviaSegnalazione() {
+      const privacy = document.getElementById("privacy_segnalazione").checked;
+
+      if (!privacy) {
+        alert("Devi leggere e accettare la Privacy Policy prima di inviare.");
+        return;
+      }
+
+      const full_name = document.getElementById("segnalazione_nome").value;
+      const phone = document.getElementById("segnalazione_telefono").value;
+      const facility = document.getElementById("segnalazione_struttura").value;
+      const description = document.getElementById("segnalazione_descrizione").value;
+
+      const { error } = await supabaseClient
+        .from("reports")
+        .insert([{ full_name, phone, facility, description, privacy_accepted: true }]);
+
+      if (error) {
+        alert("Errore invio segnalazione: " + error.message);
+      } else {
+        alert("Segnalazione inviata correttamente.");
+      }
+    }
+
+    async function inviaMessaggio() {
+      const privacy = document.getElementById("privacy_messaggio").checked;
+
+      if (!privacy) {
+        alert("Devi leggere e accettare la Privacy Policy prima di inviare.");
+        return;
+      }
+
+      const full_name = document.getElementById("messaggio_nome").value;
+      const phone = document.getElementById("messaggio_telefono").value;
+      const message = document.getElementById("messaggio_testo").value;
+
+      const { error } = await supabaseClient
+        .from("portal_messages")
+        .insert([{ full_name, phone, message, privacy_accepted: true }]);
+
+      if (error) {
+        alert("Errore invio messaggio: " + error.message);
+      } else {
+        alert("Messaggio inviato correttamente.");
+      }
+    }
+  </script>
+
+</body>
+</html>
