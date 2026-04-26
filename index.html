@@ -1,59 +1,182 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<title>Pazienti Uniti</title>
 
-      const { error } = await supabaseClient
-        .from("membership_requests")
-        .insert([{ full_name, phone, city, motivation, privacy_accepted: true }]);
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
 
-      if (error) {
-        alert("Errore invio adesione: " + error.message);
-      } else {
-        alert("Adesione inviata correttamente.");
-      }
-    }
+</head>
 
-    async function inviaSegnalazione() {
-      const privacy = document.getElementById("privacy_segnalazione").checked;
+<body>
 
-      if (!privacy) {
-        alert("Devi leggere e accettare la Privacy Policy prima di inviare.");
-        return;
-      }
+<h1>PAZIENTI UNITI</h1>
+<p>Nasciamo insieme. Cresciamo per difendere i pazienti.</p>
 
-      const full_name = document.getElementById("segnalazione_nome").value;
-      const phone = document.getElementById("segnalazione_telefono").value;
-      const facility = document.getElementById("segnalazione_struttura").value;
-      const description = document.getElementById("segnalazione_descrizione").value;
+<h3>Contatti</h3>
+<p>Telefono: 3899728973</p>
 
-      const { error } = await supabaseClient
-        .from("reports")
-        .insert([{ full_name, phone, facility, description, privacy_accepted: true }]);
+<hr>
 
-      if (error) {
-        alert("Errore invio segnalazione: " + error.message);
-      } else {
-        alert("Segnalazione inviata correttamente.");
-      }
-    }
+<!-- ADESIONE -->
+<h3>Aderisci</h3>
 
-    async function inviaMessaggio() {
-      const privacy = document.getElementById("privacy_messaggio").checked;
+<form id="adesioneForm">
 
-      if (!privacy) {
-        alert("Devi leggere e accettare la Privacy Policy prima di inviare.");
-        return;
-      }
+<input type="text" id="nome" placeholder="Nome completo" required><br><br>
 
-      const full_name = document.getElementById("messaggio_nome").value;
-      const phone = document.getElementById("messaggio_telefono").value;
-      const message = document.getElementById("messaggio_testo").value;
+<input type="text" id="telefono" placeholder="Telefono (facoltativo)"><br><br>
 
-      const { error } = await supabaseClient
-        .from("portal_messages")
-        .insert([{ full_name, phone, message, privacy_accepted: true }]);
+<input type="email" id="email" placeholder="Email (facoltativa)"><br><br>
 
-      if (error) {
-        alert("Errore invio messaggio: " + error.message);
-      } else {
-        alert("Messaggio inviato correttamente.");
-      }
-    }
-  </script>
+<textarea id="motivazione" placeholder="Perché vuoi aderire?" required></textarea><br><br>
+
+<input type="checkbox" id="privacy" required>
+<label>
+Accetto la <a href="privacy.html" target="_blank">Privacy Policy</a>
+</label><br><br>
+
+<input type="checkbox" id="newsletter">
+<label>
+Voglio ricevere aggiornamenti e petizioni via email
+</label><br><br>
+
+<button type="submit">Invia adesione</button>
+
+</form>
+
+<hr>
+
+<!-- SEGNALAZIONE -->
+<h3>Invia segnalazione</h3>
+
+<form id="segnalazioneForm">
+
+<input type="text" id="segnalazione_nome" placeholder="Nome (facoltativo)"><br><br>
+
+<input type="email" id="segnalazione_email" placeholder="Email (facoltativa)"><br><br>
+
+<textarea id="segnalazione_testo" placeholder="Scrivi la tua segnalazione" required></textarea><br><br>
+
+<input type="checkbox" id="privacy2" required>
+<label>
+Accetto la <a href="privacy.html" target="_blank">Privacy Policy</a>
+</label><br><br>
+
+<button type="submit">Invia segnalazione</button>
+
+</form>
+
+<hr>
+
+<!-- CONTATTI -->
+<h3>Contattaci</h3>
+
+<form id="contattiForm">
+
+<input type="text" id="contatto_nome" placeholder="Nome"><br><br>
+
+<input type="email" id="contatto_email" placeholder="Email"><br><br>
+
+<textarea id="contatto_messaggio" placeholder="Messaggio" required></textarea><br><br>
+
+<input type="checkbox" id="privacy3" required>
+<label>
+Accetto la <a href="privacy.html" target="_blank">Privacy Policy</a>
+</label><br><br>
+
+<button type="submit">Invia messaggio</button>
+
+</form>
+
+<hr>
+
+<a href="privacy.html">Leggi la Privacy Policy</a>
+
+<script>
+
+const supabase = window.supabase.createClient(
+  "https://zotvssrajgieftxobezm.supabase.co",
+  "sb_publishable_OtDmvCSsdDFuZPhtOvpEFA_4QYdiqgv"
+);
+
+
+// ADESIONE
+document.getElementById("adesioneForm").addEventListener("submit", async (e) => {
+e.preventDefault();
+
+const nome = document.getElementById("nome").value;
+const telefono = document.getElementById("telefono").value;
+const email = document.getElementById("email").value;
+const motivazione = document.getElementById("motivazione").value;
+const newsletter = document.getElementById("newsletter").checked;
+
+const { error } = await supabase.from("membership_requests").insert([
+{
+nome: nome,
+telefono: telefono || null,
+email: email || null,
+motivazione: motivazione,
+newsletter: newsletter
+}
+]);
+
+if (error) {
+alert("Errore invio");
+} else {
+alert("Adesione inviata!");
+}
+});
+
+
+// SEGNALAZIONI
+document.getElementById("segnalazioneForm").addEventListener("submit", async (e) => {
+e.preventDefault();
+
+const nome = document.getElementById("segnalazione_nome").value;
+const email = document.getElementById("segnalazione_email").value;
+const testo = document.getElementById("segnalazione_testo").value;
+
+const { error } = await supabase.from("report").insert([
+{
+nome: nome || null,
+email: email || null,
+testo: testo
+}
+]);
+
+if (error) {
+alert("Errore invio");
+} else {
+alert("Segnalazione inviata!");
+}
+});
+
+
+// CONTATTI
+document.getElementById("contattiForm").addEventListener("submit", async (e) => {
+e.preventDefault();
+
+const nome = document.getElementById("contatto_nome").value;
+const email = document.getElementById("contatto_email").value;
+const messaggio = document.getElementById("contatto_messaggio").value;
+
+const { error } = await supabase.from("portal_messages").insert([
+{
+nome: nome || null,
+email: email || null,
+messaggio: messaggio
+}
+]);
+
+if (error) {
+alert("Errore invio");
+} else {
+alert("Messaggio inviato!");
+}
+});
+
+</script>
+
+</body>
+</html>
