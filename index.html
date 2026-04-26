@@ -2,130 +2,182 @@
 <html lang="it">
 <head>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Pazienti Uniti</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <style>
-body {
-    font-family: Arial, sans-serif;
-    margin: 0;
-    background: #f5f5f5;
-}
-
-header {
-    background: #0b5ed7;
-    color: white;
-    text-align: center;
-    padding: 20px;
-}
-
-.hero img {
-    width: 100%;
-    display: block;
-}
-
-.container {
-    max-width: 800px;
-    margin: auto;
-    padding: 20px;
-}
-
-.box {
-    background: white;
-    padding: 20px;
-    margin-top: 20px;
-    border-radius: 10px;
-}
-
-input, textarea {
-    width: 100%;
-    padding: 10px;
-    margin: 8px 0;
-}
-
-button {
-    background: #0b5ed7;
-    color: white;
-    border: none;
-    padding: 10px;
-    cursor: pointer;
-}
-
-button:hover {
-    background: #084298;
-}
-
-h2 {
-    margin-top: 0;
-}
+body{margin:0;font-family:Arial,sans-serif;background:#f2f7f8;color:#10233f}
+.header{background:#0b5ed7;color:white;text-align:center;padding:28px 16px}
+.header h1{margin:0;font-size:30px}
+.header p{margin:8px 0 0}
+.hero img{width:100%;display:block}
+.container{max-width:900px;margin:auto;padding:18px}
+.card{background:white;border-radius:18px;padding:22px;margin:22px 0;box-shadow:0 4px 14px rgba(0,0,0,.08)}
+.card h2{margin-top:0;color:#0b5ed7}
+input,textarea{width:100%;box-sizing:border-box;padding:13px;margin:8px 0;border:1px solid #ccd6df;border-radius:10px;font-size:16px}
+textarea{min-height:110px}
+label{display:block;margin:12px 0;text-align:left;font-size:14px;line-height:1.4}
+label input{width:auto;margin-right:8px}
+button{width:100%;padding:14px;border:none;border-radius:12px;background:#159957;color:white;font-weight:bold;font-size:16px}
+.blue{background:#0b5ed7}
+.orange{background:#e67e22}
+.footer{text-align:center;padding:25px;background:#062b55;color:white}
+.footer a{color:white}
 </style>
-
 </head>
 
 <body>
 
-<header>
-<h1>PAZIENTI UNITI</h1>
-<p>Nasciamo insieme. Cresciamo per difendere i pazienti.</p>
-</header>
+<div class="header">
+  <h1>PAZIENTI UNITI</h1>
+  <p>Nasciamo insieme. Cresciamo per difendere i pazienti.</p>
+</div>
 
 <div class="hero">
-<img src="file_00000000fc98724696df71d4c44fdd7a.png">
+  <img src="file_00000000fc98724696df71d4c44fdd7a.png" alt="Pazienti Uniti - Sentinelle della Salute">
 </div>
 
 <div class="container">
 
-<div class="box">
-<h2>Contatti</h2>
-<p><b>Telefono:</b> 3899728973</p>
-<p><b>Email:</b> carmen29100@tiscali.it</p>
-</div>
+  <div class="card">
+    <h2>Contatti iniziali</h2>
+    <p><b>Telefono:</b> 389 97 28 973</p>
+    <p><b>Email:</b> carmen29100@tiscali.it</p>
+  </div>
 
-<div class="box">
-<h2>Aderisci</h2>
+  <div class="card">
+    <h2>Aderisci</h2>
+    <input id="adesione_nome" placeholder="Nome e cognome">
+    <input id="adesione_telefono" placeholder="Telefono (facoltativo)">
+    <input id="adesione_email" placeholder="Email (facoltativa)">
+    <input id="adesione_citta" placeholder="Comune">
+    <textarea id="adesione_motivazione" placeholder="Perché vuoi aderire?"></textarea>
 
-<input placeholder="Nome completo">
+    <label><input type="checkbox" id="privacy_adesione">Dichiaro di aver letto la <a href="privacy.html" target="_blank">Privacy Policy</a> e autorizzo il trattamento dei dati personali.</label>
+    <label><input type="checkbox" id="newsletter_adesione">Desidero ricevere aggiornamenti, iniziative e petizioni di Pazienti Uniti.</label>
 
-<input placeholder="Telefono (facoltativo)">
-<input placeholder="Email (facoltativa)">
+    <button onclick="inviaAdesione()">Invia adesione</button>
+  </div>
 
-<textarea placeholder="Perché vuoi aderire?"></textarea>
+  <div class="card">
+    <h2>Invia segnalazione</h2>
+    <input id="segnalazione_nome" placeholder="Nome e cognome">
+    <input id="segnalazione_telefono" placeholder="Telefono (facoltativo)">
+    <input id="segnalazione_email" placeholder="Email (facoltativa)">
+    <input id="segnalazione_struttura" placeholder="Struttura sanitaria / ente">
+    <textarea id="segnalazione_descrizione" placeholder="Descrivi la segnalazione"></textarea>
 
-<label>
-<input type="checkbox"> Accetto la <a href="privacy.html">Privacy Policy</a>
-</label><br><br>
+    <label><input type="checkbox" id="privacy_segnalazione">Dichiaro di aver letto la <a href="privacy.html" target="_blank">Privacy Policy</a> e autorizzo il trattamento dei dati personali.</label>
+    <label><input type="checkbox" id="newsletter_segnalazione">Desidero ricevere aggiornamenti, iniziative e petizioni di Pazienti Uniti.</label>
 
-<label>
-<input type="checkbox"> Voglio ricevere aggiornamenti e petizioni
-</label><br><br>
+    <button class="blue" onclick="inviaSegnalazione()">Invia segnalazione</button>
+  </div>
 
-<button onclick="alert('Adesione inviata')">Invia adesione</button>
+  <div class="card">
+    <h2>Contattaci</h2>
+    <input id="messaggio_nome" placeholder="Nome e cognome">
+    <input id="messaggio_telefono" placeholder="Telefono (facoltativo)">
+    <input id="messaggio_email" placeholder="Email (facoltativa)">
+    <textarea id="messaggio_testo" placeholder="Scrivi il tuo messaggio"></textarea>
 
-</div>
+    <label><input type="checkbox" id="privacy_messaggio">Dichiaro di aver letto la <a href="privacy.html" target="_blank">Privacy Policy</a> e autorizzo il trattamento dei dati personali.</label>
+    <label><input type="checkbox" id="newsletter_messaggio">Desidero ricevere aggiornamenti, iniziative e petizioni di Pazienti Uniti.</label>
 
-<div class="box">
-<h2>Invia segnalazione</h2>
-
-<input placeholder="Nome (facoltativo)">
-<input placeholder="Email (facoltativa)">
-
-<textarea placeholder="Scrivi la tua segnalazione"></textarea>
-
-<label>
-<input type="checkbox"> Accetto la <a href="privacy.html">Privacy Policy</a>
-</label><br><br>
-
-<button onclick="alert('Segnalazione inviata')">Invia segnalazione</button>
-
-</div>
-
-<div class="box">
-<h2>Sentinelle della salute</h2>
-<p>
-Diventa una sentinella: partecipa ai corsi gratuiti e aiutaci a difendere i pazienti.
-</p>
-</div>
+    <button class="orange" onclick="inviaMessaggio()">Invia messaggio</button>
+  </div>
 
 </div>
+
+<div class="footer">
+  <p><b>Pazienti Uniti</b></p>
+  <p><a href="privacy.html">Privacy Policy</a></p>
+</div>
+
+<script>
+const supabaseClient = window.supabase.createClient(
+  "https://zotvssrajgieftxobezm.supabase.co",
+  "sb_publishable_OtDmvCSsdDFuZPhtOvpEFA_4QYdiqgv"
+);
+
+function contattoValido(phone, email) {
+  return phone.trim() !== "" || email.trim() !== "";
+}
+
+async function inviaAdesione() {
+  const full_name = document.getElementById("adesione_nome").value;
+  const phone = document.getElementById("adesione_telefono").value;
+  const email = document.getElementById("adesione_email").value;
+  const city = document.getElementById("adesione_citta").value;
+  const motivation = document.getElementById("adesione_motivazione").value;
+  const newsletter = document.getElementById("newsletter_adesione").checked;
+
+  if (!document.getElementById("privacy_adesione").checked) {
+    alert("Devi accettare la Privacy Policy.");
+    return;
+  }
+
+  if (!contattoValido(phone, email)) {
+    alert("Inserisci almeno telefono o email.");
+    return;
+  }
+
+  const { error } = await supabaseClient
+    .from("membership_requests")
+    .insert([{ full_name, phone, email, city, motivation, privacy_accepted:true, newsletter }]);
+
+  alert(error ? "Errore: " + error.message : "Adesione inviata correttamente.");
+}
+
+async function inviaSegnalazione() {
+  const full_name = document.getElementById("segnalazione_nome").value;
+  const phone = document.getElementById("segnalazione_telefono").value;
+  const email = document.getElementById("segnalazione_email").value;
+  const facility = document.getElementById("segnalazione_struttura").value;
+  const description = document.getElementById("segnalazione_descrizione").value;
+  const newsletter = document.getElementById("newsletter_segnalazione").checked;
+
+  if (!document.getElementById("privacy_segnalazione").checked) {
+    alert("Devi accettare la Privacy Policy.");
+    return;
+  }
+
+  if (!contattoValido(phone, email)) {
+    alert("Inserisci almeno telefono o email.");
+    return;
+  }
+
+  const { error } = await supabaseClient
+    .from("reports")
+    .insert([{ full_name, phone, email, facility, description, privacy_accepted:true, newsletter }]);
+
+  alert(error ? "Errore: " + error.message : "Segnalazione inviata correttamente.");
+}
+
+async function inviaMessaggio() {
+  const full_name = document.getElementById("messaggio_nome").value;
+  const phone = document.getElementById("messaggio_telefono").value;
+  const email = document.getElementById("messaggio_email").value;
+  const message = document.getElementById("messaggio_testo").value;
+  const newsletter = document.getElementById("newsletter_messaggio").checked;
+
+  if (!document.getElementById("privacy_messaggio").checked) {
+    alert("Devi accettare la Privacy Policy.");
+    return;
+  }
+
+  if (!contattoValido(phone, email)) {
+    alert("Inserisci almeno telefono o email.");
+    return;
+  }
+
+  const { error } = await supabaseClient
+    .from("portal_messages")
+    .insert([{ full_name, phone, email, message, privacy_accepted:true, newsletter }]);
+
+  alert(error ? "Errore: " + error.message : "Messaggio inviato correttamente.");
+}
+</script>
 
 </body>
 </html>
