@@ -210,5 +210,31 @@ async function inviaMessaggio() {
 }
 </script>
 
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+
+<script>
+const supabase = supabase.createClient(
+  "https://zotvssrajgieftxobezm.supabase.co",
+  "INSERISCI_LA_TUA_CHIAVE_PUBLIC"
+);
+
+async function caricaIniziativa() {
+  const { data, error } = await supabase
+    .from("iniziative")
+    .select("*")
+    .eq("attiva", true)
+    .single();
+
+  if (error) {
+    console.log(error);
+    return;
+  }
+
+  document.getElementById("titoloIniziativa").innerText = data.titolo;
+  document.getElementById("descrizioneIniziativa").innerText = data.descrizione_breve;
+}
+
+caricaIniziativa();
+</script>
 </body>
 </html>
