@@ -17,8 +17,7 @@ body{margin:0;font-family:Arial,sans-serif;background:#f2f7f8;color:#10233f}
 .card h2{margin-top:0;color:#0b5ed7}
 .sentinelle{background:#062b55;color:white}
 .sentinelle h2{color:white}
-.levels{display:grid;gap:14px}
-.level{background:#0b3d73;border-radius:14px;padding:16px}
+.level{background:#0b3d73;border-radius:14px;padding:16px;margin:14px 0}
 input,textarea{width:100%;box-sizing:border-box;padding:13px;margin:8px 0;border:1px solid #ccd6df;border-radius:10px;font-size:16px}
 textarea{min-height:110px}
 label{display:block;margin:12px 0;text-align:left;font-size:14px;line-height:1.4}
@@ -39,19 +38,19 @@ button{width:100%;padding:14px;border:none;border-radius:12px;background:#159957
 </div>
 
 <div class="hero">
-  <img src="sentinelle_della_salute.png" alt="Pazienti Uniti - Sentinelle della Salute">
+  <img src="file_00000000fc98724696df71d4c44fdd7a.png" alt="Pazienti Uniti">
 </div>
 
 <div class="container">
-  <div class="card">
-  <h2>Raccolta firme</h2>
-  <h3 id="titoloIniziativa">Caricamento iniziativa...</h3>
-  <p id="descrizioneIniziativa"></p>
 
-  <a href="iniziativa.html">
-    <button class="blue">Leggi e firma</button>
-  </a>
-</div>
+  <div class="card">
+    <h2>Raccolta firme</h2>
+    <h3 id="titoloIniziativa">Caricamento iniziativa...</h3>
+    <p id="descrizioneIniziativa"></p>
+    <a href="iniziativa.html">
+      <button class="blue">Leggi e firma</button>
+    </a>
+  </div>
 
   <div class="card">
     <h2>Contatti iniziali</h2>
@@ -60,29 +59,21 @@ button{width:100%;padding:14px;border:none;border-radius:12px;background:#159957
 
   <div class="card sentinelle">
     <h2>Diventa una Sentinella della Salute</h2>
-    <p>
-      Le Sentinelle della Salute sono cittadini formati per offrire informazione,
-      supporto e presenza nei percorsi sanitari. L’obiettivo è aiutare i pazienti
-      a orientarsi, comprendere i propri diritti e riconoscere eventuali criticità.
-    </p>
-    <p>
-      Partecipando ai corsi gratuiti potrai contribuire alla crescita del progetto
-      e diventare parte attiva della rete di tutela dei pazienti.
-    </p>
+    <p>Le Sentinelle della Salute sono cittadini formati per offrire informazione, supporto e presenza nei percorsi sanitari.</p>
 
-    <div class="levels">
-      <div class="level">
-        <h3>Livello 1 — 4 punte</h3>
-        <p>Formazione di base: ascolto, orientamento e informazione generale.</p>
-      </div>
-      <div class="level">
-        <h3>Livello 2 — 5 punte</h3>
-        <p>Formazione avanzata: supporto più strutturato e conoscenza dei percorsi.</p>
-      </div>
-      <div class="level">
-        <h3>Livello 3 — 6 punte</h3>
-        <p>Formazione eccellente ed etica: presenza consapevole, responsabile e rispettosa.</p>
-      </div>
+    <div class="level">
+      <h3>Livello 1 — 4 punte</h3>
+      <p>Formazione di base.</p>
+    </div>
+
+    <div class="level">
+      <h3>Livello 2 — 5 punte</h3>
+      <p>Formazione avanzata.</p>
+    </div>
+
+    <div class="level">
+      <h3>Livello 3 — 6 punte</h3>
+      <p>Formazione eccellente ed etica.</p>
     </div>
   </div>
 
@@ -142,6 +133,24 @@ const supabaseClient = window.supabase.createClient(
 
 function contattoValido(phone, email) {
   return phone.trim() !== "" || email.trim() !== "";
+}
+
+async function caricaIniziativa() {
+  const { data, error } = await supabaseClient
+    .from("iniziative")
+    .select("titolo, descrizione_breve")
+    .eq("attiva", true)
+    .limit(1)
+    .single();
+
+  if (error) {
+    document.getElementById("titoloIniziativa").innerText = "Raccolta firme";
+    document.getElementById("descrizioneIniziativa").innerText = "Al momento non è stato possibile caricare il testo dal database.";
+    return;
+  }
+
+  document.getElementById("titoloIniziativa").innerText = data.titolo;
+  document.getElementById("descrizioneIniziativa").innerText = data.descrizione_breve;
 }
 
 async function inviaAdesione() {
@@ -217,49 +226,9 @@ async function inviaMessaggio() {
 
   alert(error ? "Errore: " + error.message : "Messaggio inviato correttamente.");
 }
+
+caricaIniziativa();
 </script>
 
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
-
-<script>
-const supabase = supabase.createClient(
-  "https://zotvssrajgieftxobezm.supabase.co",
-  "sb_publishable_OtDmvCSsdDFuZPhtOvpEFA_4QYdiqgv"
-);
-
-async function caricaIniziativa() {
-  const { data, error } = await supabase
-    .from("iniziative")
-    .select("*")
-    .eq("attiva", true)
-    .single();
-
-  if (error) {
-    console.log(error);
-    return;
-  }
-
-  document.getElementById("titoloIniziativa").innerText = data.titolo;
-  document.getElementById("descrizioneIniziativa").innerText = data.descrizione_breve;
-}
-
-async function caricaIniziativa() {
-  const { data, error } = await supabase
-    .from("iniziative")
-    .select("*")
-    .eq("attiva", true)
-    .single();
-
-  if (error) {
-    console.log(error);
-    return;
-  }
-
-  document.getElementById("titoloIniziativa").innerText = data.titolo;
-  document.getElementById("descrizioneIniziativa").innerText = data.descrizione_breve;
-}
-
-caricaIniziativa();();
-</script>
 </body>
 </html>
