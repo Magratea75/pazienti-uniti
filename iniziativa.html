@@ -1,1 +1,91 @@
 
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Raccolta firme - Pazienti Uniti</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<style>
+body{margin:0;font-family:Arial,sans-serif;background:#f2f7f8;color:#10233f}
+.header{background:#0b5ed7;color:white;text-align:center;padding:28px 16px}
+.container{max-width:900px;margin:auto;padding:18px}
+.card{background:white;border-radius:18px;padding:24px;margin:22px 0;box-shadow:0 4px 14px rgba(0,0,0,.08)}
+h1,h2{color:#0b5ed7}
+.testo{white-space:pre-line;line-height:1.7;font-size:17px}
+button{width:100%;padding:15px;border:none;border-radius:12px;background:#159957;color:white;font-weight:bold;font-size:17px}
+.footer{text-align:center;padding:25px}
+</style>
+</head>
+
+<body>
+
+<div class="header">
+  <h1>Pazienti Uniti</h1>
+  <p>Raccolta firme</p>
+</div>
+
+<div class="container">
+
+  <div class="card">
+    <h1 id="titolo">Caricamento...</h1>
+    <p id="descrizione"></p>
+  </div>
+
+  <div class="card">
+    <h2>Testo della raccolta firme</h2>
+    <div id="testo" class="testo"></div>
+  </div>
+
+  <div class="card">
+    <button onclick="firma()">Leggi e firma</button>
+  </div>
+
+  <div class="footer">
+    <a href="index.html">← Torna alla pagina principale</a>
+  </div>
+
+</div>
+
+<script>
+const supabaseClient = window.supabase.createClient(
+  "https://zotvssrajgieftxobezm.supabase.co",
+  "sb_publishable_OtDmvCSsdDFuZPhtOvpEFA_4QYdiqgv"
+);
+
+let linkFirma = "#";
+
+async function caricaIniziativa() {
+  const { data, error } = await supabaseClient
+    .from("iniziative")
+    .select("titolo, descrizione_breve, testo_completo, link_firma")
+    .eq("attiva", true)
+    .limit(1)
+    .single();
+
+  if (error) {
+    document.getElementById("titolo").innerText = "Raccolta firme";
+    document.getElementById("descrizione").innerText = "Errore nel caricamento.";
+    return;
+  }
+
+  document.getElementById("titolo").innerText = data.titolo;
+  document.getElementById("descrizione").innerText = data.descrizione_breve;
+  document.getElementById("testo").innerText = data.testo_completo;
+  linkFirma = data.link_firma || "#";
+}
+
+function firma() {
+  if (linkFirma === "#") {
+    alert("Il link per firmare sarà inserito a breve.");
+    return;
+  }
+  window.open(linkFirma, "_blank");
+}
+
+caricaIniziativa();
+</script>
+
+</body>
+</html>
