@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="it">
 <head>
@@ -15,7 +14,7 @@ body{margin:0;font-family:Arial,sans-serif;background:#f2f7f8;color:#10233f}
 h1,h2{color:#0b5ed7}
 .testo{white-space:pre-line;line-height:1.7;font-size:17px}
 button{width:100%;padding:15px;border:none;border-radius:12px;background:#159957;color:white;font-weight:bold;font-size:17px}
-.footer{text-align:center;padding:25px}
+.errore{background:#ffe5e5;color:#900;padding:15px;border-radius:10px}
 </style>
 </head>
 
@@ -30,7 +29,71 @@ button{width:100%;padding:15px;border:none;border-radius:12px;background:#159957
 
   <div class="card">
     <h1 id="titolo">Caricamento...</h1>
-    <p id="fraseEvidenza" style="font-weight:bold; font-size:18px; margin-top:15px;"></p>
-
-<p id="fraseIntro" style="margin-top:10px;"></p>
     <p id="descrizione"></p>
+    <p id="errore" class="errore" style="display:none;"></p>
+  </div>
+
+  <div class="card">
+    <h2>Testo della raccolta firme</h2>
+    <div id="testo" class="testo"></div>
+  </div>
+
+  <div class="card">
+    <button onclick="firma()">Leggi e firma</button>
+  </div>
+
+  <div class="card">
+    <a href="index.html">← Torna alla pagina principale</a>
+  </div>
+
+</div>
+
+<script>
+const supabaseClient = window.supabase.createClient(
+  "https://zotvssrajgieftxobezm.supabase.co",
+  "sb_publishable_OtDmvCSsdDFuZPhtOvpEFA_4QYdiqgv"
+);
+
+let linkFirma = "#";
+
+async function caricaIniziativa() {
+  const risultato = await supabaseClient
+    .from("iniziative")
+    .select("*")
+    .eq("attiva", true)
+    .limit(1);
+
+  if (risultato.error) {
+    document.getElementById("titolo").innerText = "Errore caricamento";
+    document.getElementById("errore").style.display = "block";
+    document.getElementById("errore").innerText = risultato.error.message;
+    return;
+  }
+
+  if (!risultato.data || risultato.data.length === 0) {
+    document.getElementById("titolo").innerText = "Nessuna raccolta firme attiva";
+    document.getElementById("descrizione").innerText = "Nel database non risulta alcuna iniziativa attiva.";
+    return;
+  }
+
+  const data = risultato.data[0];
+
+  document.getElementById("titolo").innerText = data.titolo || "Raccolta firme";
+  document.getElementById("descrizione").innerText = data.descrizione_breve || "";
+  document.getElementById("testo").innerText = data.testo_completo || "";
+  linkFirma = data.link_firma || "#";
+}
+
+function firma() {
+  if (linkFirma === "#") {
+    alert("Il link per firmare sarà inserito a breve.");
+    return;
+  }
+  window.open(linkFirma, "_blank");
+}
+
+caricaIniziativa();
+</script>
+
+</body>
+</html>
