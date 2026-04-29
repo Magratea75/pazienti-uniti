@@ -62,7 +62,7 @@ let linkFirma = "#";
 async function caricaIniziativa() {
   const { data, error } = await supabaseClient
     .from("iniziative")
-    .select("titolo, descrizione_breve, testo_completo, link_firma")
+    .select("titolo, descrizione_breve, testo_completo, link_firma, frase_evidenza, frase_bottone_intro")
     .eq("attiva", true)
     .limit(1)
     .single();
@@ -75,6 +75,8 @@ async function caricaIniziativa() {
 
   document.getElementById("titolo").innerText = data.titolo;
   document.getElementById("descrizione").innerText = data.descrizione_breve;
+  document.getElementById("fraseEvidenza").innerText = data.frase_evidenza || "";
+document.getElementById("fraseIntro").innerText = data.frase_bottone_intro || "";
   document.getElementById("testo").innerText = data.testo_completo;
   linkFirma = data.link_firma || "#";
 }
